@@ -10,13 +10,13 @@ TRACE is a simple Python script that compares the similarities between different
 
 The script takes the following arguments:
 
-- model (required): The method to use to compare the texts. Must be either "minihash" or "sentencetransformer".
-- model_type: If you're using the sentencetransformer (default: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2).
-- directory (required): The directory containing the text files to compare.
-- window_size: The size of each text window. Defaults to 100. Increasing the window size increases the size of the text chunks being compared. A smaller window size may lead to more granular comparison, while a larger window size might lead to more generalized comparison.
-- step_size: The step size to move for each new window. Defaults to 50.  A smaller step size means more overlap between consecutive windows and more comparisons, leading to potentially higher precision but slower computation. A larger step size means less overlap and fewer comparisons.
-- ngram_size: The size of each n-gram, if you're using the MinHash method. Defaults to 3. Larger n-gram sizes may capture more context but might be less sensitive to small changes, while smaller n-gram sizes might be more sensitive but less context-aware.
-- similarity_threshold: The threshold for considering two texts to be similar. Defaults to 0.7. 
+- **model** (required): The method to use to compare the texts. Must be either "minihash" or "sentencetransformer".
+- **model_type**: If you're using the sentencetransformer (default: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2).
+- **directory** (required): The directory containing the text files to compare.
+- **window_size**: The size of each text window. Defaults to 100. Increasing the window size increases the size of the text chunks being compared. A smaller window size may lead to more granular comparison, while a larger window size might lead to more generalized comparison.
+- **step_size**: The step size to move for each new window. Defaults to 50.  A smaller step size means more overlap between consecutive windows and more comparisons, leading to potentially higher precision but slower computation. A larger step size means less overlap and fewer comparisons.
+- **ngram_size**: The size of each n-gram, if you're using the MinHash method. Defaults to 3. Larger n-gram sizes may capture more context but might be less sensitive to small changes, while smaller n-gram sizes might be more sensitive but less context-aware.
+- **similarity_threshold**: The threshold for considering two texts to be similar. Defaults to 0.7. 
 Increasing the threshold will result in fewer but potentially higher quality similarities
 
 #### Minihash
