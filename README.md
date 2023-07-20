@@ -1,7 +1,7 @@
 ## TRACE - Text Reuse Analysis and Comparison Engine
 
 
-TRACE is a simple Python script that compares the similarities between different text files using two methods: MinHash and SentenceTransformer. It allows you to specify the directory containing the text files, the size of the text windows to compare, the step size to move for each new window, and the similarity threshold. It also creates a network graph (text_similarity_network.gexf) of the text similarities.
+TRACE is a simple Python script that compares the similarities between different text files (even multilingual) using two methods: MinHash and SentenceTransformer. It allows you to specify the directory containing the text (txt) files, the size of the text windows to compare, the step size to move for each new window, and the similarity threshold. It also creates a network graph (text_similarity_network.gexf) of the text similarities.
 
 <img src="daffy-trace.gif" width="400" />
 
