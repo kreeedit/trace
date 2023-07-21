@@ -27,9 +27,12 @@ def print_progress_message(message, num_files, interval=1):
     def run():
         while getattr(thread, "do_run", True):
             for i in range(4):
-                # Calculate the number of remaining files
-                remaining_files = num_files - processed_files[0]
-                sys.stdout.write(f"\r{message}{'.' * i} ({remaining_files} files remaining)")
+                if num_files is not None:
+                    # Calculate the number of remaining files
+                    remaining_files = num_files - processed_files[0]
+                    sys.stdout.write(f"\r{message}{'.' * i} ({remaining_files} files remaining)")
+                else:
+                    sys.stdout.write(f"\r{message}{'.' * i}")
                 sys.stdout.flush()
                 time.sleep(interval)
         # Print a newline when done to prevent overwriting the last progress message
@@ -43,6 +46,9 @@ def print_progress_message(message, num_files, interval=1):
         processed_files[0] += 1
 
     thread.update_processed_files = update_processed_files
+    
+    # Create a list to keep track of the number of processed files
+    processed_files = [0]
 
     return thread
 
@@ -210,6 +216,10 @@ def compare_texts_minhash(directory, window_size, step_size, ngram_size, similar
     # Stop the progress thread
     progress_thread.do_run = False
     progress_thread.join()
+    
+    # Create a progress thread for generating results
+    results_thread = print_progress_message("Generating results", None)
+    results_thread.start()
 
     # Compare MinHashes of all pairs of windows and store if similarity is above threshold
     similarities = []
@@ -227,6 +237,11 @@ def compare_texts_minhash(directory, window_size, step_size, ngram_size, similar
                         'text2_text': window2,
                         'minhash_similarity': minhash_similarity,
                     })
+                    
+    # Stop the results thread
+    results_thread.do_run = False
+    results_thread.join()
+    
     return similarities
 
 
@@ -280,6 +295,10 @@ def compare_texts_embeddings(directory, window_size, step_size, model_type, simi
     # Stop the progress thread
     progress_thread.do_run = False
     progress_thread.join()
+    
+    # Create a progress thread for generating results
+    results_thread = print_progress_message("Generating results", None)
+    results_thread.start()
 
     # Compare embeddings of all pairs of windows and store if similarity is above threshold
     similarities = []
@@ -297,6 +316,11 @@ def compare_texts_embeddings(directory, window_size, step_size, model_type, simi
                         'text2_text': window2,
                         'similarity': float(similarity),  # convert numpy float32 to python float
                     })
+                    
+    # Stop the results thread
+    results_thread.do_run = False
+    results_thread.join()
+    
     return similarities
 
 def main():
@@ -321,6 +345,10 @@ def main():
 
     print("Computation Time: ", end_time - start_time)
     
+    # Create a progress thread and start it
+    progress_thread = print_progress_message("Saving files", None)
+    progress_thread.start()
+    
     # Print results
     json_result = json_pretty_print(similarities, 'result.json')
     print(json_result)
@@ -328,6 +356,10 @@ def main():
     # Build network
     graph = build_network(similarities)
     nx.write_gexf(graph, 'text_similarity_network.gexf')
+    
+    # Stop the progress thread
+    progress_thread.do_run = False
+    progress_thread.join()
 
 
 if __name__ == '__main__':
