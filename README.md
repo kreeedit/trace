@@ -55,7 +55,7 @@ python trace.py --model sentencetransformer --directory texts/ --window_size 100
 Different SentenceTransformer models may produce different results depending on the specific characteristics of the text. Some models may work better with certain languages or domains. For pre-trained models, see [S-BERT page](https://www.sbert.net/docs/pretrained_models.html) and [Huggingface](https://huggingface.co/models?pipeline_tag=sentence-similarity&sort=trending)
 
 ## Network graph
-The generated GEXF file can be opened by a variety of graph visualization software, such as [Gephi](https://gephi.org/), [Cytoscape](https://cytoscape.org/), and [Orange](https://orangedatamining.com/widget-catalog/networks/networkanalysis/). These applications allow you to view the network data as a graph, and to explore the relationships between the nodes and edges. However, the script also generates a preliminary visualization picture (text_similarity_network.png)
+The generated GEXF file can be opened by a variety of graph visualization app, such as [Gephi](https://gephi.org/), [Cytoscape](https://cytoscape.org/), and [Orange](https://orangedatamining.com/widget-catalog/networks/networkanalysis/). These applications allow you to view the network data as a graph, and to explore the relationships between the nodes and edges. However, the script also generates a preliminary visualization picture (text_similarity_network.png)
 
 
 <img src="visualization.png" width="700" />
