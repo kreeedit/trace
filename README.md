@@ -50,6 +50,15 @@ python trace.py --model sentencetransformer --directory texts/ --window_size 100
         "text2_text": "ass sie völlig normal waren, \nVielen Dank. Sie waren die letzten Menschen, von denen man \nin etwas S",
         "text2_window_start": 100
     },
+{
+        "similarity": 0.835121750831604,
+        "text1_filename": "text01.txt",
+        "text1_text": "ve Nummer vier,\n\nThe Dursleys had everything they wanted, but they \nalso had a secret, and their gre",
+        "text1_window_start": 800,
+        "text2_filename": "text03.txt",
+        "text2_text": " Dursley tenían todo lo que deseaban, pero también un secreto que temían que se descubriera. Creían ",
+        "text2_window_start": 1000
+    },
 ```
 
 Different SentenceTransformer models may produce different results depending on the specific characteristics of the text. Some models may work better with certain languages or domains. For pre-trained models, see [S-BERT page](https://www.sbert.net/docs/pretrained_models.html) and [Huggingface](https://huggingface.co/models?pipeline_tag=sentence-similarity&sort=trending)
