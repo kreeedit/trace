@@ -1,6 +1,7 @@
 torch
 argparse
 networkx
+matplotlib
 datasketch
 sentence-transformers
 scikit-learn

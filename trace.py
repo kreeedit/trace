@@ -6,6 +6,7 @@ import sys
 import torch
 import argparse
 import networkx as nx
+import matplotlib.pyplot as plt
 from datasketch import MinHash
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -82,7 +83,7 @@ def json_pretty_print(data, filename):
 
 def build_network(similarities):
     """
-    Build a network graph from text similarities
+    Build a network graph from text similarities + visualize it with matplotlib
 
     Arguments:
     similarities -- list of text similarities
@@ -109,7 +110,19 @@ def build_network(similarities):
             graph[text1][text2]['weight'] += 1
         else:
             graph.add_edge(text1, text2, weight=1)
-
+            
+    # Visualize the graph
+    pos = nx.spring_layout(graph, k=0.5, iterations=50)
+    plt.figure(figsize=(20, 20))
+    
+    nx.draw(graph, pos, with_labels=True, node_color='skyblue', node_size=1500, edge_color='black', linewidths=1, font_size=10)
+    
+    edge_labels = nx.get_edge_attributes(graph, 'weight')
+    nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, font_size=10)
+    
+    # Save the graph
+    plt.savefig('text_similarity_network.png', dpi=300, format='PNG')
+    
     return graph
 
 # MinHash functions
