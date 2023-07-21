@@ -58,4 +58,4 @@ Different SentenceTransformer models may produce different results depending on 
 The generated GEXF file can be opened by a variety of graph visualization software, such as [Gephi](https://gephi.org/), [Cytoscape](https://cytoscape.org/), and [Orange](https://orangedatamining.com/widget-catalog/networks/networkanalysis/). These applications allow you to view the network data as a graph, and to explore the relationships between the nodes and edges. However, the script also generates a preliminary visualization picture (text_similarity_network.png)
 
 
-<img src="visualization.png" width="400" />
+<img src="visualization.png" width="700" />
