@@ -244,8 +244,6 @@ def compare_texts_minhash(directory, window_size, step_size, ngram_size, similar
     
     return similarities
 
-
-
 # SentenceTransformer functions
 model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
 # Move model to GPU if available
@@ -286,9 +284,9 @@ def compare_texts_embeddings(directory, window_size, step_size, model_type, simi
                 text = file.read()
                 # Create windowed text and compute embeddings for each window
                 text_windows = sliding_window(text, window_size, step_size)
-                for i, window in enumerate(text_windows):
-                    embedding = model.encode(window)
-                    texts[(filename, i)] = (window, embedding)  # store window and embedding
+                embeddings = model.encode(text_windows)  # compute embeddings for all windows at once
+                for i, embedding in enumerate(embeddings):
+                    texts[(filename, i)] = (text_windows[i], embedding)  # store window and embedding
             # Update the number of processed files
             progress_thread.update_processed_files()
 
