@@ -245,11 +245,6 @@ def compare_texts_minhash(directory, window_size, step_size, ngram_size, similar
     return similarities
 
 # SentenceTransformer functions
-model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
-# Move model to GPU if available
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model = model.to(device)
-
 
 def compare_texts_embeddings(directory, window_size, step_size, model_type, similarity_threshold=0.7):
     """
@@ -269,6 +264,10 @@ def compare_texts_embeddings(directory, window_size, step_size, model_type, simi
 
     # Initialize the SentenceTransformer model
     model = SentenceTransformer(model_type)
+
+    # Move model to GPU if available
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model = model.to(device)
 
     # Count the number of files to process
     num_files = len([name for name in os.listdir(directory) if name.endswith(".txt")])
