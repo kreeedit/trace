@@ -118,39 +118,42 @@ def shingle_text(text, s=5, mode="word"):
     raise ValueError("Invalid mode. Choose either 'word' or 'character'.")
 
 
+
 def process_text_files(directory, s=4, mode="word"):
-  """Processes all .txt files in a given directory.
+    """Processes all .txt files in a given directory and its subdirectories.
 
-  For each file, this function reads the content, preprocesses it,
-  and generates shingles (word-based or character-based).
-  The results are stored in a dictionary with file names as keys.
+    For each file, this function reads the content, preprocesses it,
+    and generates shingles (word-based or character-based).
+    The results are stored in a dictionary with file names as keys.
 
-  Args:
-    directory: The path to the directory containing the .txt files.
-    s: The size of each shingle (number of words or characters). Defaults to 4.
-    mode: The type of shingle to generate. Can be either 'word' or 'character'.
-          Defaults to 'word'.
+    Args:
+        directory: The path to the directory containing the .txt files.
+        s: The size of each shingle (number of words or characters). Defaults to 4.
+        mode: The type of shingle to generate. Can be either 'word' or 'character'.
+              Defaults to 'word'.
 
-  Returns:
-    A dictionary where keys are file names and values are dictionaries
-    containing the "text" and "shingles" for each file.
-  """
-  file_data = {}
-  for file_name in tqdm(os.listdir(directory), desc=f"Processing {directory}", unit="file"):
-    file_path = os.path.join(directory, file_name)
-    if os.path.isfile(file_path) and file_name.endswith('.txt'):
-      try:
-        with open(file_path, 'r', encoding='utf-8') as file:
-          text = file.read()
-          text = preprocess_text(text)
-          shingles = shingle_text(text, s, mode)
-          file_data[file_name] = {
-              "text": text,
-              "shingles": shingles,
-          }
-      except IOError as e:
-        print(f"Error reading {file_path}: {e}")
-  return file_data
+    Returns:
+        A dictionary where keys are file names and values are dictionaries
+        containing the "text" and "shingles" for each file.
+    """
+    file_data = {}
+    for root, _, files in tqdm(os.walk(directory), desc=f"Processing {directory}", unit="dir"):
+        for file_name in files:
+            if file_name.endswith('.txt'):
+                file_path = os.path.join(root, file_name)
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as file:
+                        text = file.read()
+                        text = preprocess_text(text)
+                        shingles = shingle_text(text, s, mode)
+                        relative_path = os.path.relpath(file_path, directory)
+                        file_data[relative_path] = {
+                            "text": text,
+                            "shingles": shingles,
+                        }
+                except IOError as e:
+                    print(f"Error reading {file_path}: {e}")
+    return file_data
 
 
 def load_signatures(signatures):
