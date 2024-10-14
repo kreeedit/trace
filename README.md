@@ -1,67 +1,56 @@
 ## TRACE - Text Reuse Analysis and Comparison Engine
 
 
-TRACE is a simple Python script that compares the similarities between different text files (even when they are multilingual or paraphrased) using two methods: MinHash and SentenceTransformer. It allows you to specify the directory containing the text (txt) files, the size of the text windows to compare, the step size to move for each new window, and the similarity threshold. It also creates a network graph (_text_similarity_network.gexf_) of the text similarities to see the relations of the different texts. The result of the analytics is stored in a json file (_result.json_)
+TRACE is a simple Python script that compares the similarities between different text files using two methods: shingling and sentence embeddings. It allows you to specify the directory containing the text (txt) files. It also creates a network graph of the text similarities to see the relations of the different texts. The result of the analytics is stored in a json file (_similarity_results.json_). TRACE can be useful for tasks such as plagiarism detection, document clustering, or identifying related documents in large text collections.
 
 <img src="daffy-trace.gif" width="400" />
 
 
 ### USAGE
 
-The script takes the following arguments:
+TRACE takes the following command-line arguments:
 
-- **model** (required): The method to use to compare the texts. Must be either "minihash" or "sentencetransformer".
-- **model_type**: If you're using the sentencetransformer (default: paraphrase-multilingual-MiniLM-L12-v2).
-- **directory** (required): The directory containing the text files to compare.
-- **window_size**: The size of each text window. Defaults to 100. Increasing the window size increases the size of the text chunks being compared. A smaller window size may lead to more granular comparison, while a larger window size might lead to more generalized comparison.
-- **step_size**: The step size to move for each new window. Defaults to 50.  A smaller step size means more overlap between consecutive windows and more comparisons, leading to potentially higher precision but slower computation. A larger step size means less overlap and fewer comparisons.
-- **ngram_size**: The size of each n-gram, if you're using the MinHash method. Defaults to 3. Larger n-gram sizes may capture more context but might be less sensitive to small changes, while smaller n-gram sizes might be more sensitive but less context-aware.
-- **similarity_threshold**: The threshold for considering two texts to be similar. Defaults to 0.7. 
-Increasing the threshold will result in fewer but potentially higher quality similarities
+--**dir1** (required): Path to the first directory containing .txt files
 
-#### Minihash
+--**dir2** (required): Path to the second directory containing .txt files
+
+--**s** (optional, default=5): Number of words or characters per shingle
+
+--**mode** (required, default="word"): Shingling mode, either 'word' or 'character'
+
+--**t** (optional, default=1): Threshold for minimum number of shared shingles
+
+--**m** (optional): Use SentenceTransformer model. If specified without a value, it uses the default model "intfloat/multilingual-e5-large"
+
+--**similarity_threshold** (optional, default=0.85): Similarity threshold for SentenceTransformer comparison
+
+These arguments allow users to customize the text comparison process, including the directories to compare, the shingling method, and whether to use additional semantic similarity analysis with a SentenceTransformer model.
+
 ```python
-python trace.py --model minihash --directory texts/ --ngram_size 5 --similarity_threshold 0.8
+python trace.py --dir1 /path/to/first/directory --dir2 /path/to/second/directory --s 5 --mode word --t 3 --m "sentence-transformers/all-MiniLM-L6-v2" --similarity_threshold 0.8
 ```
+What this command will do:
+
+- Process all .txt files in both specified directories, creating 5-word shingles for each file.
+- Perform an initial comparison using these shingles, identifying pairs of texts that share at least 3 shingles.
+- For the text pairs that pass the initial shingling comparison, it will use the specified SentenceTransformer model to calculate semantic similarity.
+- Keep only the text pairs whose semantic similarity score is above 0.8.
+- Generate a network graph visualizing the similarities between texts.
+- Save the results to a JSON file.
+
 ##### result.json (sample)
 ```json
-    {
-        "minhash_similarity": 0.9921875,
-        "text1_filename": "text06.txt",
-        "text1_text": " The perception of inherent tensions between justice and injustice (or the disproportion of good and",
-        "text1_window_start": 0,
-        "text2_filename": "text08.txt",
-        "text2_text": "The perception of inherent tensions between justice and injustice (or the disproportion of good and ",
-        "text2_window_start": 0
-    },
+[
+  {
+    "dir1_file": "2Thessalonians_chapter_3.txt",
+    "dir2_file": "PannHOSB_1320_IV_charter.txt",
+    "similarity": 0.9021626114845276,
+    "shared_shingles": [
+      "domini nostri iesu christi"
+    ],
+    "num_shared_shingles": 1
+  },
 ```
-#### Transformer (multilingual paraphrase)
-```python
-python trace.py --model sentencetransformer --directory texts/ --window_size 100 --step_size 100 --similarity_threshold=0.8
-```
-##### result.json (sample)
-```json
- {
-        "similarity": 0.8367198705673218,
-        "text1_filename": "text01.txt",
-        "text1_text": "y were perfectly normal, \nthank you very much. They were the last people you’d \nexpect to be involve",
-        "text1_window_start": 100,
-        "text2_filename": "text02.txt",
-        "text2_text": "ass sie völlig normal waren, \nVielen Dank. Sie waren die letzten Menschen, von denen man \nin etwas S",
-        "text2_window_start": 100
-    },
-{
-        "similarity": 0.835121750831604,
-        "text1_filename": "text01.txt",
-        "text1_text": "ve Nummer vier,\n\nThe Dursleys had everything they wanted, but they \nalso had a secret, and their gre",
-        "text1_window_start": 800,
-        "text2_filename": "text03.txt",
-        "text2_text": " Dursley tenían todo lo que deseaban, pero también un secreto que temían que se descubriera. Creían ",
-        "text2_window_start": 1000
-    },
-```
-
-Different SentenceTransformer models may produce different results depending on the specific characteristics of the text. Some models may work better with certain languages or domains. For pre-trained models, see [S-BERT page](https://www.sbert.net/docs/pretrained_models.html) and [Huggingface](https://huggingface.co/models?pipeline_tag=sentence-similarity&sort=trending). Offered alternative models are: [Language-Agnostic BERT Sentence Embedding](https://huggingface.co/sentence-transformers/LaBSE), [all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)
 
 
 
