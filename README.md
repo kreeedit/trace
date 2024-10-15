@@ -33,7 +33,7 @@ What this command will do:
 
 - Process all .txt files in both specified directories, creating 5-word shingles for each file.
 - Perform an initial comparison using these shingles, identifying pairs of texts that share at least 3 shingles.
-- For the text pairs that pass the initial shingling comparison, it will use the specified SentenceTransformer model to calculate semantic similarity.
+- For the text pairs that pass the initial shingling comparison, it will use the specified SentenceTransformer model to calculate semantic similarity between the complete docuemnts.
 - Keep only the text pairs whose semantic similarity score is above 0.8.
 - Generate a network graph visualizing the similarities between texts.
 - Save the results to a JSON file.
